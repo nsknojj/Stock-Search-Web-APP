@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Stock Search</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel = "stylesheet" href = "https://ajax.googleapis.com/ajax/libs/angular_material/1.1.4/angular-material.min.css">
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+
+</head>
+<body ng-app = "MyApp" class="bg-dark">
+  <script src="js/fb.js"></script>
+  <div class="container">
+    <div class="panel" id="search-bar">
+      <h4 class="text-center"><strong>Stock Market Search</strong></h4>
+
+      <div ng-controller = "SearchCtrl as ctrl" ng-cloak>
+        <form class="form" id="myform" method="GET" action="">
+          <div class="row">
+          <div class="col-sm-4">
+          <label>Enter Stock Ticker Symbol:<font color="red">*</font></lable>
+          </div>
+          <div class="col-sm-4">
+          <div class="form-group" id="search-group">
+            <md-autocomplete style="width: auto;" md-input-id="symbol" required
+            md-clear-button="false"
+            ng-disabled = "ctrl.isDisabled"
+            md-no-cache = "ctrl.noCache"
+            md-selected-item = "ctrl.selectedItem"
+            md-search-text = "ctrl.searchText"
+            md-search-text-change = "ctrl.searchTextChange(ctrl.searchText)"
+            md-items = "item in ctrl.querySearch(ctrl.searchText)"
+            md-item-text = "item.value"
+            md-min-length = "0"
+            placeholder = "e.g. AAPL">
+              <md-item-template>
+                <span md-highlight-text = "ctrl.searchText"
+                   md-highlight-flags = "^i">{{item.display}}</span>
+              </md-item-template>
+            <!-- <md-not-found>
+              No symbol matching "{{ctrl.searchText}}" were found.
+            </md-not-found> -->
+            </md-autocomplete>
+            <div class="invalid-feedback" style='visibility:hidden'>
+              Please enter a stock ticker symbol.
+            </div>
+          </div>
+          </div>
+          <div class="col-sm-4">
+          <div class="form-group">
+            <button name="submit" type="submit" class="btn btn-primary"/>
+            <span class="glyphicon glyphicon-search"></span> Get Quote</button>
+
+          </div>
+          <div class="form-group">
+            <button style="display:inline-block" type="button" class="btn btn-default" onClick="document.getElementById('result').remove();this.form.input.value=''">
+            <span class="glyphicon glyphicon-refresh"></span> Clear
+            </button>
+          </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+    <hr>
+    <div class="panel" id="fav-bar">
+      <div ng-controller="FavCtrl" id="fav-controller">
+      <!-- // angular control; -->
+      <div ng-view class="slide" id="fav-slide">
+        <div class="panel panel-default " id="fav-list-pn">
+          <div class="panel-heading">
+            <div class="row">
+            <div class="col-sm-2"><strong>Favorite List</strong></div>
+            <div class="col-sm-10 text-right">Automatic Refresh:
+              <input type="checkbox" unchecked data-toggle="toggle" onchange="changeNg(this.checked)">
+              <!-- <toggle ng-model="AutoRefreshCheck" ng-change="autoRefreshChange()"></toggle> -->
+              <button class="btn btn-default" ng-click="refresh()"><span class="glyphicon glyphicon-refresh"></span></button>
+              <button class="btn btn-default"><span class="glyphicon glyphicon-chevron-right" style="color:grey;"></span></button>
+            </div>
+            </div>
+          </div>
+          <div class="panel-body">
+          <form class="form-inline">
+                <div class="form-group">
+                  <label><b>Sort by</b></label>
+                  <select class="form-control" style="width:12em;" ng-model="SortByChange" ng-change="selectChange()" id="sort-by">
+                    <option value="default" >Default</option>
+                    <option>Symbol</option>
+                    <option>Price</option>
+                    <option>Change</option>
+                    <option>Change Percent</option>
+                    <option>Volume</option>
+                  </select>
+                </div>
+                <!-- </div> -->
+                <!-- <div class="col-sm-1"></div> -->
+                <div class="form-group">
+                  <label><b>Order</b></label>
+                  <select class="form-control" style="width:12em;" disabled=true ng-model="OrderChange" ng-change="selectChange()" id='order'>
+                    <option value="default">Ascending</option>
+                    <option>Descending</option>
+                  </select>
+                </div>
+          </form>
+          <table class="table" style="margin-top:1em;">
+            <tr>
+              <th>Symbol<th>Stock Price<th>Change (Change Percent)<th>Volume<th>&nbsp;
+            </tr>
+
+            <tr ng-repeat="x in favlist">
+              <td><a ng-click="getIndChart(x.Symbol)">{{x.Symbol}}</a><td>{{x.Price}}<td><span ng-bind-html="render(x.Change)"></span><td>{{x.Volume}}<td><button class="btn btn-default trash-btn" ng-click="remove(x.Symbol)"><span class="glyphicon glyphicon-trash"></span></button>
+            </tr>
+          </table>
+        </div>
+        </div>
+      </div>
+
+      <div ng-view class="slide" id="stock-slide">
+        <div class="panel panel-default" id="stock-pn">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-sm-1">
+              <button class="btn btn-default"><span class="glyphicon glyphicon-chevron-left" style="color:grey;"></button>
+              </div>
+              <div class="col-sm-11 text-center">
+                <strong>Stock Details</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <ul class="nav nav-pills" id="nav1">
+              <li role="presentation" id="nav-stock" class="active"><a><span class="glyphicon glyphicon-dashboard"></span> Current Stock</a></li>
+              <li role="presentation" id="nav-chart"><a><span class="glyphicon glyphicon-stats"></span> Historical Charts</a></li>
+              <li role="presentation" id="nav-feeds"><a><span class="glyphicon glyphicon-link"></span> News Feeds</a></li>
+            </ul>
+            <hr>
+            <div class="container-fluid" id="stock">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="row">
+                    <div class="col-sm-6">
+                    <b>Stock Details</b>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                      <button id="fav-btn" ng-click="toggleStock()" class="btn btn-default" style="padding:5px 7px 3px 8px;background:white;">
+                        <span class="glyphicon glyphicon-star-empty" style="font-size: 15px">
+                        </span>
+                        <span class="glyphicon glyphicon-star" style="font-size: 15px; color:#efd932">
+                        </span>
+                      </button>
+
+                      <button id="fb-btn" ng-click="shareFB()" class="btn btn-default" style="padding:3px 6px 5px 7px;background:white;">
+                        <img src="img/facebook.png"
+                        style = "width: 18px; padding:0; margin:0;"></img>
+                      </button>
+                    </div>
+                  </div>
+          <!-- Stock Details -->
+                  <br>
+                  <div class="row">
+                    <table class="table" id="table-detail" style="display:none">
+                      <tr>
+                        <th>Stock Ticker Symbol<td id="detail-symbol">
+                      <tr>
+                        <th>Last Price<td id="detail-last-price">
+                      <tr>
+                        <th>Change (Change Percent)<td id="detail-change">
+                      <tr>
+                        <th>Timestamp<td id="detail-timestamp">
+                      <tr>
+                        <th>Open<td id="detail-open">
+                      <tr>
+                        <th id="detail-previous-close-th">Previous Close<td id="detail-previous-close">
+                      <tr>
+                        <th>Day's Range<td id="detail-range">
+                      <tr>
+                        <th>Volume<td id="detail-volume">
+                    </table>
+                    <div class="progress" id="progress-detail" style="display:none">
+                      <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0", style="width: 40%">
+                      </div>
+                    </div>
+                    <div class="alert alert-danger" id="error-detail">
+                      <strong>Error! Failed to get current stock data.</strong>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-sm-6">
+                  <ul class="nav nav-tabs" id="nav2">
+                    <li role="presentation" id="nav-Price" class="active"><a>Price</a></li>
+                    <li role="presentation" id="nav-SMA"><a>SMA</a></li>
+                    <li role="presentation" id="nav-EMA"><a>EMA</a></li>
+                    <li role="presentation" id="nav-STOCH"><a>STOCH</a></li>
+                    <li role="presentation" id="nav-RSI"><a>RSI</a></li>
+                    <li role="presentation" id="nav-ADX"><a>ADX</a></li>
+                    <li role="presentation" id="nav-CCI"><a>CCI</a></li>
+                    <li role="presentation" id="nav-BBANDS"><a>BBANDS</a></li>
+                    <li role="presentation" id="nav-MACD"><a>MACD</a></li>
+                  </ul>
+                  <br>
+
+                  <div class="row" id="chart-set">
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div class="container-fluid" id="chart" style="display:none">
+              <div container id="chart-his" style="width:100%;height:100%"></div>
+              <div class="progress" id="progress-his" style="display:none">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0", style="width: 40%">
+                </div>
+              </div>
+              <div class="alert alert-danger" id="error-his">
+                <strong>Error! Failed to get historical charts data.</strong>
+              </div>
+            </div>
+
+            <div class="container-fluid" id="feeds" style="display:none">
+              <div id="content-feeds"></div>
+              <div class="progress" id="progress-feeds" style="display:none">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0", style="width: 40%">
+                </div>
+              </div>
+              <div class="alert alert-danger" id="error-feeds">
+                <strong>Error! Failed to get news feed data.</strong>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      </div>
+      <!-- // angular control end; -->
+    </div>
+
+    </div>
+
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+    <script src="https://use.fontawesome.com/8a478e1fb7.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.min.js"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-aria.min.js"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-messages.min.js"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/angular_material/1.1.4/angular-material.min.js"></script>
+    <script src='js/moment.min.js'></script>
+    <script src='js/moment-timezone.min.js'></script>
+    <script src='js/moment-timezone-with-data-2012-2022.min.js'></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

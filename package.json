@@ -1,0 +1,23 @@
+{
+  "name": "stock-search",
+  "version": "1.0.0",
+  "description": "A stock search app that shows the indicators, price charts, news feeds, etc.",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "keywords": [
+    "stock"
+  ],
+  "author": "Wentao Zhang",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "jquery": "^3.2.1",
+    "jsdom": "^11.3.0",
+    "request": "^2.83.0",
+    "xml2js": "^0.4.19"
+  }
+}

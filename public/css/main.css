@@ -1,0 +1,177 @@
+body {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+}
+
+.bg-dark {
+  background: url('../img/background.png');
+}
+.bg-white {
+  background-color: #ffffff;
+}
+
+.invalid-feedback {
+  color: red;
+}
+
+#search-bar {
+  margin-top: 1em;
+  padding: 1em;
+  padding-bottom: 0px;
+}
+
+#myform #symbol.invalid-input.focused-input {
+  border-color: #a94442;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(169, 68, 66,.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(169, 68, 66,.6);
+}
+
+#myform #symbol.invalid-input {
+  border-color: #a94442;
+}
+
+#myform #symbol.valid-input.focused-input {
+  border-color: #66afe9;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+}
+
+#myform #symbol.valid-input {
+  border-color: #66afe9;
+}
+
+#fav-list-pn, #stock-pn {
+  margin: 1em;
+}
+
+#feeds .panel {
+  margin-left: -1em;
+  margin-right: -1em;
+  background-color: #F5F5F5;
+}
+
+#feeds .panel .container{
+  padding: 1em;
+}
+
+label {
+  /*padding-left: 1em;*/
+  padding-right: 1em;
+}
+
+#fav-bar .form-group {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+form {
+  margin-bottom: 1em;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+md-autocomplete md-progress-linear { display: none; }
+
+form, form div { display: inline; }
+
+/*div {border: 1px solid grey;}*/
+
+.form-group {}
+
+form #symbol {
+  display: block;
+  width: 300px;
+  height: 34px;
+  font-size: 14px;
+  line-height: 1.42857;
+  color: rgb(85, 85, 85);
+  background-color: rgb(255, 255, 255);
+  background-image: none;
+  box-shadow: rgba(0, 0, 0, 0.075) 0px 1px 1px inset;
+  padding: 6px 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(204, 204, 204);
+  border-image: initial;
+  border-radius: 4px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  /*margin: auto;*/
+  margin-top: 0px;
+}
+
+form md-autocomplete {
+  background: none;
+}
+
+table tr:nth-child(odd) {
+  background: rgb(248,248,248);
+}
+
+#table-detail tr{
+  line-height: 55px;
+  min-height: 55px;
+  height: 55px;
+}
+
+td, th {
+  height: 50px;
+  /*padding: 10px;*/
+  display: table-cell;
+  vertical-align: middle !important;
+}
+
+.trash-btn {background: white;}
+
+.md-whiteframe-1dp, .md-whiteframe-z1 {
+  box-shadow: none;
+  background: white;
+}
+
+.progress, .alert {
+  margin-left: 1em;
+  margin-right: 1em;
+  margin-top: 1em;
+  margin-bottom: 2em;
+  display: none;
+}
+
+/*.alert {display: block;}*/
+
+#progress-detail, #error-detail {
+  margin-top: 67px;
+}
+
+#fav-bar {
+  position: relative;
+  overflow: hidden;
+}
+
+.container-scroll {
+  padding: 0;
+  width: auto;
+}
+/*
+.no-wrap {
+  display: inline;
+  float: right;
+  margin-right: 1em;
+}
+*/
+.slide {
+  transition:all linear 0.3s;
+  position: inherit;
+  left: 0;
+  width: 100%;
+}
+
+#stock-slide.slide.ng-hide{
+  transition: none;
+  left: -100%;
+  /*padding:0 10px;*/
+}
+
+#fav-slide.slide.ng-hide{
+  transition: none;
+  left: 100%;
+}
